@@ -40,6 +40,18 @@ llm = LLM(
     trust_remote_code=True,  # !
 )
 
+# detect gemma2 engine
+NONE_SYSTEM_ROLE_CONFIGS = [
+    "Gemma2Config"
+]
+_internal_llm_config_type = type(llm.llm_engine.model_config.hf_config).__name__
+print(f'Detected LLM Config is ({_internal_llm_config_type})')
+if _internal_llm_config_type in NONE_SYSTEM_ROLE_CONFIGS:
+    support_system_role = False
+else:
+    support_system_role = True
+print("System role using = ", support_system_role)
+
 sampling_params = SamplingParams(
     temperature=0,
     skip_special_tokens=True,
@@ -52,7 +64,22 @@ df_questions = pd.read_json("questions.jsonl", orient="records", encoding="utf-8
 if not os.path.exists("./generated/" + args.model):
     os.makedirs("./generated/" + args.model)
 
+
 for strategy_name, prompts in PROMPT_STRATEGY.items():
+    print(prompts)
+
+    if not support_system_role:
+        # merge content until first user role
+        contents = []
+        for index, prompt in enumerate(prompts):
+            if prompt["role"] == "system":
+                contents.append(prompt["content"])
+            else:
+                contents.append(prompt["content"])
+                prompt["content"] = "\n".join(contents) # merge the accumulated contents to user's content
+                prompts = prompts[index::] # remove system role
+                break
+        print(prompt)
 
     def format_single_turn_question(question):
         return llm.llm_engine.tokenizer.tokenizer.apply_chat_template(
