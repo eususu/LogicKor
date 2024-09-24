@@ -28,7 +28,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--model-output-dir", help="Model Output Directory", required=True)
     parser.add_argument("-k", "--openai-api-key", help="OpenAI API Key", required=True)
-    parser.add_argument("-j", "--judge-model", help="Judge Model", default="gpt-4-1106-preview")
+    parser.add_argument("-j", "--judge-model", help="Judge Model", default="gpt-4o")
     parser.add_argument("-t", "--threads", help="Thread count", default=42, type=int)
     parser.add_argument("--azure", help="Use Azure OpenAI", action="store_true")
     return parser.parse_args()
