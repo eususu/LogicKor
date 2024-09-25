@@ -42,14 +42,13 @@ table_header = "| Category | Single turn | Multi turn |\n|---|---|---|"
 
 # 표의 내용 생성
 table_rows = []
-for category, scores in category_scores.items():
+for category, scores in sorted(category_scores.items()):
     avg_single = sum(scores["single_scores"]) / len(scores["single_scores"])
     avg_multi = sum(scores["multi_scores"]) / len(scores["multi_scores"])
     table_rows.append(f"| {category} | {avg_single:.2f} | {avg_multi:.2f} |")
 
     total_single_scores.extend(scores["single_scores"])
     total_multi_scores.extend(scores["multi_scores"])
-
 # 카테고리별 점수 평균 출력
 print(table_header)
 for row in table_rows:
