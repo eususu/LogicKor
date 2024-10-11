@@ -12,7 +12,8 @@ try:
     print("- Using aphrodite-engine")
 
 except ImportError:
-    from vllm import LLM, SamplingParams
+    from vllm import LLM, SamplingParams 
+    from vllm.lora.request import LoRARequest
 
     print("- Using vLLM")
 
@@ -25,6 +26,7 @@ parser.add_argument(
     default="yanolja/EEVE-Korean-Instruct-2.8B-v1.0",
 )
 parser.add_argument("-ml", "--model_len", help=" : Maximum Model Length", default=4096, type=int)
+parser.add_argument("-lora", "--lora_module", help=" : Lora Module Path", default='', type=str)
 args = parser.parse_args()
 
 print(f"Args - {args}")
@@ -38,6 +40,8 @@ llm = LLM(
     max_model_len=args.model_len,
     gpu_memory_utilization=0.8,
     trust_remote_code=True,  # !
+    enable_lora=False if len(args.lora_module) == 0 else True,
+
 )
 
 # detect gemma2 engine
@@ -91,7 +95,7 @@ for strategy_name, prompts in PROMPT_STRATEGY.items():
     single_turn_questions = df_questions["questions"].map(format_single_turn_question)
     print(single_turn_questions.iloc[0])
     single_turn_outputs = [
-        output.outputs[0].text.strip() for output in llm.generate(single_turn_questions, sampling_params)
+        output.outputs[0].text.strip() for output in llm.generate(single_turn_questions, sampling_params, lora_request=None if len(args.lora_module) == 0 else LoRARequest('lora', 1, args.lora_module),)
     ]
 
     def format_double_turn_question(question, single_turn_output):
@@ -111,7 +115,7 @@ for strategy_name, prompts in PROMPT_STRATEGY.items():
         axis=1,
     )
     multi_turn_outputs = [
-        output.outputs[0].text.strip() for output in llm.generate(multi_turn_questions, sampling_params)
+        output.outputs[0].text.strip() for output in llm.generate(multi_turn_questions, sampling_params, lora_request=None if len(args.lora_module) == 0 else LoRARequest('lora', 1, args.lora_module),)
     ]
 
     df_output = pd.DataFrame(
