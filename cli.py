@@ -1,6 +1,8 @@
 import argparse
 import os
 import subprocess
+
+from merger import merge_model
 parser = argparse.ArgumentParser()
 
 
@@ -43,16 +45,27 @@ def eval_command(args:argparse.Namespace):
         shutil.rmtree('./evaluated/default.jsonl', ignore_errors=True)
         shutil.rmtree('./evaluated/cot-1-shot.jsonl', ignore_errors=True)
         shutil.rmtree('./evaluated/1-shot.jsonl', ignore_errors=True)
+    
+
+    if lora_adapter:
+        # merge: vllm이 lora rank 16이상은 지원안하므로, 합쳐서 평가함
+        merged_model = f"{model}_auto_merged"
+
+        merge_model(
+            model,
+            lora_adapter,
+            merged_model
+            )
+        
+        # redirect to merged model
+        model = merged_model
+
     cmd = [
         'python3',
         'generator.py',
         '-m',
         model,
     ]
-
-    if lora_adapter:
-        cmd.append('-lora')
-        cmd.append(lora_adapter)
     subprocess.call(cmd)
 
     model_output_dir= f'./generated/{model}'
