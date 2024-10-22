@@ -1,16 +1,36 @@
 import os
+from typing import Optional
+from pydantic import BaseModel
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
+    class Triplet(BaseModel):
+        model:str
+        lora_adapter:str
+        lora_adapter_revision:Optional[str]
+
+    input_triplet:Triplet = {
+        'model': _model,
+        'lora_adapter': lora_adapter,
+        'lora_adapter_revision': revision,
+    }
+    triplet:Triplet = None
 
     if os.path.exists(output):
         print(f"already has merged model({output})")
-        return
+        with open('triplet.json', 'r') as file:
+            triplet = Triplet.model_validate(file)
+
+        if triplet is not None:
+            if triplet == input_triplet:
+                return
+            else:
+                print("renew merging")
+                print(f'saved triplet({triplet}), new triplet({input_triplet})')
 
     print(f"generating merge model to {output}")
-
 
     device_map = 'auto'
 
@@ -34,5 +54,8 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
         model.save_pretrained(output)
         tokenizer.save_pretrained(output)
         print(f'병합결과가 ({output})에 기록되었습니다.')
+
+        with open('triplet.json', 'w') as file:
+            file.write(triplet.model_dump())
 
     torch.cuda.empty_cache()
