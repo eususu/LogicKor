@@ -7,7 +7,7 @@ from peft import PeftModel
 
 def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
 
-    triplet_path = f'{_model}/triplet.json'
+    triplet_path = f'{output}/triplet.json'
 
     class Triplet(BaseModel):
         model:str
