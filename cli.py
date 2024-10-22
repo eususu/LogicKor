@@ -51,7 +51,10 @@ def eval_command(args:argparse.Namespace):
         import shutil
         for f in remove_list:
             print(f'# {f} 파일(디렉터리)을 삭제합니다')
-            shutil.rmtree(f, ignore_errors=True)
+            if os.path.isfile(f):
+                os.remove(f)
+            else:
+                shutil.rmtree(f, ignore_errors=True)
     
     if lora_adapter:
         # merge: vllm이 lora rank 16이상은 지원안하므로, 합쳐서 평가함

@@ -75,6 +75,7 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
 
     while True:
         used_ram_end = torch.cuda.memory_allocated(device)
+        print(f'{used_ram} --- {used_ram_end}')
         if used_ram <= used_ram_end:
             # 아직 메모리 남음
             import time
