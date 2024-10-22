@@ -72,7 +72,10 @@ def eval_command(args:argparse.Namespace):
         model,
     ]
     print(cmd)
-    subprocess.call(cmd)
+    exit_code = subprocess.call(cmd)
+    if exit_code != 0:
+        print(f'failed subprocess job(exit_code)')
+        exit(exit_code)
 
     model_output_dir= f'./generated/{model}'
     print(model_output_dir)
@@ -89,7 +92,10 @@ def eval_command(args:argparse.Namespace):
         '30'
     ]
     print(cmd)
-    subprocess.call(cmd)
+    exit_code = subprocess.call(cmd)
+    if exit_code != 0:
+        print(f'failed subprocess job(exit_code)')
+        exit(exit_code)
 
     score_command(args)
 

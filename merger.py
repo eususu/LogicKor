@@ -62,3 +62,6 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
             file.write(input_triplet.model_dump_json())
 
     torch.cuda.empty_cache()
+    import gc
+    print('garbage collection 을 수행합니다.')
+    gc.collect()
