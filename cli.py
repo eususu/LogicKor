@@ -42,7 +42,7 @@ def eval_command(args:argparse.Namespace):
     if args.force:
         remove_list = [
         f'./generated/{model}',
-        merged_model,
+        f'./generated/{merged_model}',
         './evaluated/default.jsonl',
         './evaluated/cot-1-shot.jsonl',
         './evaluated/1-shot.jsonl',
