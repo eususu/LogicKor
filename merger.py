@@ -14,7 +14,7 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
 
     device_map = 'auto'
 
-    with torch.no_rad():
+    with torch.no_grad():
         print(f'{_model} 을 로딩합니다.')
         model = AutoModelForCausalLM.from_pretrained(_model, device_map=device_map, torch_dtype=torch.bfloat16)
         tokenizer = AutoTokenizer.from_pretrained(_model, device_map=device_map)
