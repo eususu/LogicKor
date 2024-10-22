@@ -2,7 +2,6 @@ import argparse
 import os
 import subprocess
 
-from merger import merge_model
 parser = argparse.ArgumentParser()
 
 
@@ -59,12 +58,25 @@ def eval_command(args:argparse.Namespace):
     if lora_adapter:
         # merge: vllm이 lora rank 16이상은 지원안하므로, 합쳐서 평가함
 
-        merge_model(
-            model,
-            lora_adapter=lora_adapter,
-            revision=lora_adapter_revision,
-            output=merged_model,
-            )
+        cmd = [
+        'python3',
+        'merger.py',
+        '-m',
+        model,
+        '-o',
+        merged_model,
+        '-lm',
+        lora_adapter
+        ]
+
+        if lora_adapter_revision is not None:
+            cmd.append('-lmr')
+            cmd.append(lora_adapter_revision)
+
+        exit_code = subprocess.call(cmd)
+        if exit_code != 0:
+            print(f'failed subprocess job(exit_code)')
+            exit(exit_code)
         
         # redirect to merged model
         model = merged_model

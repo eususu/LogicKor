@@ -71,17 +71,19 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
     torch.cuda.synchronize()
     torch.cuda.empty_cache()
 
-    import gc
-    print('garbage collection 을 수행합니다.')
-    gc.collect()
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("-m", help=" : base model", required=True)
+parser.add_argument("-lm", help=" : lora adapter", required=True)
+parser.add_argument("-lmr", help=" : revision of lora adapter storage")
+parser.add_argument("-o", help=" : output to saved", required=True)
 
-    while True:
-        used_ram_end = torch.cuda.memory_allocated(device)
-        print(f'{used_ram} --- {used_ram_end}')
-        if used_ram <= used_ram_end:
-            # 아직 메모리 남음
-            import time
-            time.sleep(2)
-            continue
-        else:
-            break
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    model = args.m
+    lora_adapter = args.lm
+    revision = args.lmr
+    output = args.o
+
+    merge_model(model, lora_adapter=lora_adapter, revision=revision, output=output)
