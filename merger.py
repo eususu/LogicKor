@@ -45,7 +45,7 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
         if revision is not None:
             peft_args['revision'] = revision
 
-        print(f'{lora_adapter} revision={revision} 을 로딩합니다.')
+        print(f'lora_adapter={lora_adapter}, revision={revision} 을 로딩합니다.')
         model = PeftModel.from_pretrained(model, lora_adapter, **peft_args)
 
         print(f'병합 시작')
@@ -56,6 +56,6 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
         print(f'병합결과가 ({output})에 기록되었습니다.')
 
         with open('triplet.json', 'w') as file:
-            file.write(triplet.model_dump())
+            file.write(input_triplet.model_dump())
 
     torch.cuda.empty_cache()
