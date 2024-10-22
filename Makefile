@@ -15,9 +15,6 @@ requirements:
 	poetry export -f requirements.txt --output requirements.txt --without-hashes
 	poetry export -f requirements.txt --output requirements-dev.txt --without-hashes --with dev
 
-
 test:
-	python3 -m eval google/gemma-2-2b-it -lm ../vrl/dpo_result -f
+	python3 -m cli eval -m google/gemma-2-2b-it -lm ../ai/vrl/dpo_result -f
 
-score:
-	python3 cli.py score
