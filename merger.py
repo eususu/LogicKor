@@ -24,7 +24,9 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
     if os.path.exists(output) and os.path.exists(triplet_path):
         print(f"already has merged model({output})")
         with open(triplet_path, 'r') as file:
-            triplet = Triplet.model_validate(file)
+            import json
+            triplet_json = json.load(file)
+            triplet = Triplet(**triplet_json)
 
         if triplet is not None:
             if triplet == input_triplet:
