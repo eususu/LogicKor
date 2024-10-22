@@ -38,9 +38,11 @@ def eval_command(args:argparse.Namespace):
         raise ValueError("need openai apikey (use option -k or environment variable)")
     print(f"GO eval model({model}), lora_adapter({lora_adapter})")
 
+    merged_model = f"{model}_auto_merged"
     if args.force:
         remove_list = [
         f'./generated/{model}',
+        merged_model,
         './evaluated/default.jsonl',
         './evaluated/cot-1-shot.jsonl',
         './evaluated/1-shot.jsonl',
@@ -53,7 +55,6 @@ def eval_command(args:argparse.Namespace):
     
     if lora_adapter:
         # merge: vllm이 lora rank 16이상은 지원안하므로, 합쳐서 평가함
-        merged_model = f"{model}_auto_merged"
 
         merge_model(
             model,
