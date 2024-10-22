@@ -60,6 +60,9 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
         tokenizer.save_pretrained(output)
         print(f'병합결과가 ({output})에 기록되었습니다.')
 
+        del model
+        del tokenizer
+
         with open(triplet_path, 'w') as file:
             file.write(input_triplet.model_dump_json())
 
