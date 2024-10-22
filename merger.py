@@ -6,6 +6,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
+    device = torch.cuda.current_device()
+    used_ram = torch.cuda.memory_allocated(device)
 
     triplet_path = f'{output}/triplet.json'
 
@@ -70,3 +72,13 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
     import gc
     print('garbage collection 을 수행합니다.')
     gc.collect()
+
+    while True:
+        used_ram_end = torch.cuda.memory_allocated(device)
+        if used_ram <= used_ram_end:
+            # 아직 메모리 남음
+            import time
+            time.sleep(2)
+            continue
+        else:
+            break
