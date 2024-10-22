@@ -30,9 +30,9 @@ def merge_model(_model:str, lora_adapter:str, revision:str, output:str):
 
         print(f'병합 시작')
         model = model.merge_and_unload()
-        print(f'병합이 완료되었습니다.')
+        print(f'병합결과를 기록합니다.')
         model.save_pretrained(output)
         tokenizer.save_pretrained(output)
-        print(f'병합결과가 {output}에 기록되었습니다.')
+        print(f'병합결과가 ({output})에 기록되었습니다.')
 
-        torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
