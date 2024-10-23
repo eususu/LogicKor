@@ -113,6 +113,18 @@ def eval_command(args:argparse.Namespace):
         print(f'failed subprocess job(exit_code)')
         exit(exit_code)
 
+    # 평가 파일 복사
+    dest_path = f'{model_output_dir}/LogicKor'
+    if not os.path.exists(dest_path):
+        os.mkdir(dest_path)
+    copy_list = [
+        'default.jsonl',
+        'cot-1-shot.jsonl',
+        '1-shot.jsonl',
+    ]
+    for file in copy_list:
+        shutil.copyfile(f'./evaluated/{file}', f'{dest_path}/{file}')
+
     score_command(args)
 
 subparsers = parser.add_subparsers(title='commands', dest='command')
@@ -137,14 +149,3 @@ if args.command is None:
 
 print(args)
 args.func(args)
-
-
-"""
-subprocess.call()
-
-python3 generator.py -m google/gemma-2-2b-it -lora ../ai/vrl/simpo_result/
-
-python3 evaluator.py -o ./generated/google/gemma-2-2b-it/default.jsonl -k ${OPENAI_API_KEY} -j gpt-4o -t 30
-
-python3 score.py -p ./evaluated/default.jsonl
-"""
