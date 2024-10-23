@@ -1,6 +1,7 @@
 import argparse
 import os
 import subprocess
+import shutil
 
 parser = argparse.ArgumentParser()
 
@@ -114,16 +115,18 @@ def eval_command(args:argparse.Namespace):
         exit(exit_code)
 
     # 평가 파일 복사
-    dest_path = f'{model_output_dir}/LogicKor'
-    if not os.path.exists(dest_path):
-        os.mkdir(dest_path)
-    copy_list = [
-        'default.jsonl',
-        'cot-1-shot.jsonl',
-        '1-shot.jsonl',
-    ]
-    for file in copy_list:
-        shutil.copyfile(f'./evaluated/{file}', f'{dest_path}/{file}')
+    if os.path.exists(model):
+        # 머징된 경우에 추가 해줌
+        dest_path = f'{model}/LogicKor'
+        if not os.path.exists(dest_path):
+            os.mkdir(dest_path)
+        copy_list = [
+            'default.jsonl',
+            'cot-1-shot.jsonl',
+            '1-shot.jsonl',
+        ]
+        for file in copy_list:
+            shutil.copyfile(f'./evaluated/{file}', f'{dest_path}/{file}')
 
     score_command(args)
 
