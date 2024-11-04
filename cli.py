@@ -2,6 +2,7 @@ import argparse
 import os
 import subprocess
 import shutil
+import torch
 
 parser = argparse.ArgumentParser()
 
@@ -24,6 +25,10 @@ def score_command(args):
         subprocess.call(cmd)
 
 def eval_command(args:argparse.Namespace):
+    device_count=torch.cuda.device_count()
+    devices = [count for count in range(device_count)]
+    print(f"detected CUDA DEVICES: ({devices})")
+
     model = args.m
     lora_adapter = args.lm
     lora_adapter_revision = args.lmr
@@ -87,6 +92,8 @@ def eval_command(args:argparse.Namespace):
         'generator.py',
         '-m',
         model,
+        '-g',
+        ",".join(devices)
     ]
     print(cmd)
     exit_code = subprocess.call(cmd)
