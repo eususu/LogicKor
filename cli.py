@@ -26,7 +26,7 @@ def score_command(args):
 
 def eval_command(args:argparse.Namespace):
     device_count=torch.cuda.device_count()
-    devices = [count for count in range(device_count)]
+    devices = [str(count) for count in range(device_count)]
     print(f"detected CUDA DEVICES: ({devices})")
 
     model = args.m
