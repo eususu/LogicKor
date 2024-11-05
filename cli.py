@@ -7,6 +7,10 @@ import torch
 parser = argparse.ArgumentParser()
 
 
+
+if not torch.cuda.is_available():
+    raise Exception("CUDA is not available!!!")
+
 def clear_command(args):
     print('go clear')
 
